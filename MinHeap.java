@@ -6,7 +6,7 @@ public class MinHeap
 
     public static void main (String[] args)
     {
-        int[] arr = new int[] { 4, 11, 6, 19, 23, 15, 16, 7, 2, 13, 5, 12, 3, 32, 14, 1, 8, 9 };
+        int[] arr = new int[] { 5, 3, 13, 4, 14, 7, 11, 6, 12, 2, 15, 1, 16, 9, 0, 10, 8 };
         MinHeap heap = new MinHeap(arr, 24);
         heap.print();
         System.out.println("Popped off the top: " + heap.pop());
