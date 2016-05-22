@@ -45,7 +45,7 @@ public class BinarySearchTree
 
         int[] removed = new int[]{ 6, 4, 1, 8 };
         for (int i = 0; i < removed.length; i++) {
-            System.out.print("Remove " + i + "    :  " + tree.remove(i) + " ... ");
+            System.out.print("Remove " + removed[i] + "    :  " + tree.remove(removed[i]) + " ... ");
             tree.print_ordered();
         }
     }
