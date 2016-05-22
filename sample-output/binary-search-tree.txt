@@ -1,0 +1,19 @@
+
+#------ BinarySearchTree ------#
+
+Input Array: [ 4, 3, 5, 2, 6, 1, 7 ]
+
+Contains 4 :  true
+Contains 7 :  true
+Contains 0 :  false
+Contains 8 :  false
+
+Min Value  :  1
+Max Value  :  7
+
+Ordered      :  [ 1, 2, 3, 4, 5, 6, 7 ]
+
+Remove 0    :  false ... [ 1, 2, 3, 4, 5, 6, 7 ]
+Remove 1    :  true ... [ 2, 3, 4, 5, 6, 7 ]
+Remove 2    :  true ... [ 3, 4, 5, 6, 7 ]
+Remove 3    :  true ... [ 4, 5, 6, 7 ]
