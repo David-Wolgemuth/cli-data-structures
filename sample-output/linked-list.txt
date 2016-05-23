@@ -1,0 +1,12 @@
+a -> b -> c -> d -> e
+a -> 2nd -> b -> c -> d -> penultimate -> e
+Back: e, Front: a
+
+Value at pos 1: 2nd
+Value at pos 1 from back: penultimate
+
+Removing "b" ... true
+Removing "e" ... true
+Removing "a" ... true
+
+2nd -> c -> d -> penultimate
