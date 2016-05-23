@@ -17,10 +17,10 @@ public class LinkedList<T>
         for (int i = 0; i < args.length; i++) {
             list.add_back((String)args[i]);
         }
-        list.print();
+        System.out.println(list);
         list.add_back("penultimate", 1);
         list.add_front("2nd", 1);
-        list.print();
+        System.out.println(list);
         System.out.println("Back: " + list.back() + ", Front: " + list.front());
         System.out.println();
         System.out.println("Value at pos 1: " + list.value_at(1));
@@ -29,8 +29,7 @@ public class LinkedList<T>
         System.out.println("Removing \"b\" ... " + list.remove("b"));
         System.out.println("Removing \"e\" ... " + list.remove("e"));
         System.out.println("Removing \"a\" ... " + list.remove("a"));
-        System.out.println();
-        list.print();
+        System.out.println("\n" + list);
     }
 
     public boolean is_empty () { return !Node.exists(head); }
@@ -42,15 +41,16 @@ public class LinkedList<T>
         }
         return count;
     }
-    public void print ()
+    public String toString ()
     {
+        String str = "";
         for (Node<T> curr = head; Node.exists(curr); curr = curr.get_next()) {
-            System.out.print(curr.value());
+            str += curr.value();
             if (!curr.is_last()) {
-                System.out.print(" -> ");
+                str += " -> ";
             }
         }
-        System.out.print("\n");
+        return str + "\n";
     }
     public T front () { return value_at(0); }
     public T back () { return value_from_back(0); }
@@ -174,5 +174,5 @@ public class LinkedList<T>
         public Node<T> get_next () { return next; }
 
         public boolean is_last () { return this.next == null; }
-}
+    }
 }
