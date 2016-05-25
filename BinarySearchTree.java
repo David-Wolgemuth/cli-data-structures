@@ -1,11 +1,10 @@
 
-
-public class BinarySearchTree
+public class BinarySearchTree <T extends Comparable<T>>
 {
-    private Node head;
+    private Node<T> head;
 
     public BinarySearchTree () {}
-    public BinarySearchTree (int[] arr)
+    public BinarySearchTree (T[] arr)
     {
         for (int i = 0; i < arr.length; i++) {
             insert(arr[i]);
@@ -14,10 +13,11 @@ public class BinarySearchTree
     public static void main (String[] args)
     {
         System.out.print("\n#------ BinarySearchTree ------#\n\nInput Array: [ ");
-        BinarySearchTree tree = new BinarySearchTree();
+
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
 
         for (int i = 0; i < args.length; i++) {
-            int val = Integer.parseInt(args[i]);
+            Integer val = Integer.parseInt(args[i]);
             if (!tree.insert(val)) {
                 continue;
             }
@@ -29,109 +29,115 @@ public class BinarySearchTree
         }
         System.out.print(" ]\n\n");
 
-        int [] doesItContain = new int[] { 4, 7, 0, 8 };
+        Integer [] doesItContain = new Integer[] { 4, 7, 0, 8 };
         for (int i = 0; i < doesItContain.length; i++) {
             System.out.println("Contains " + doesItContain[i] + " :  " + tree.contains(doesItContain[i]));
         }
 
         System.out.println();
-        System.out.println("Min Value  :  " + tree.get_min());
-        System.out.println("Max Value  :  " + tree.get_max());
+        System.out.println("Min Value  :  " + tree.min());
+        System.out.println("Max Value  :  " + tree.max());
         System.out.println();
 
-        System.out.print("Ordered      :  ");
-        tree.print_ordered();
+        System.out.println("Ordered      :  " + tree);
+        // tree.print_ordered();
         System.out.print("\n");
 
-        int[] removed = new int[]{ 6, 4, 1, 8 };
+        System.out.println("Size: " + tree.size());
+        Integer[] removed = new Integer[]{ 6, 4, 1, 8 };
         for (int i = 0; i < removed.length; i++) {
-            System.out.print("Remove " + removed[i] + "    :  " + tree.remove(removed[i]) + " ... ");
-            tree.print_ordered();
+            System.out.println("Remove " + removed[i] + "    :  " + tree.remove(removed[i]) + " ... " + tree);
         }
+        System.out.println("Size: " + tree.size());
     }
     public boolean is_empty ()
     {
         return head == null;
     }
-    public int get_min ()
+    public int size()
     {
-        if (is_empty()) { return 0; }
-        return farthest_left(head).get_value();
+        return size(head);
     }
-    public int get_max ()
+    public T min ()
     {
-        if (is_empty()) { return 0; }
-        return farthest_right(head).get_value();
+        if (is_empty()) { return null; }
+        return farthest_left(head).value();
     }
-    public boolean contains (int value)
+    public T max ()
     {
-        return find(value, head) != null;
+        if (is_empty()) { return null; }
+        return farthest_right(head).value();
     }
-    public boolean insert (int value)
+    public boolean contains (T value)
     {
-        Node node = new Node(value);
+        return Node.exists(find(value, head));
+    }
+    public boolean insert (T value)
+    {
+        Node<T> node = new Node<T>(value);
         if (is_empty()) {
             head = node;
             return true;
         }
         return insert (head, node);
     }
-    public void print_ordered ()
+    public String toString ()
     {
-        System.out.print("[ ");
-        print_ordered(head, get_max());
-        System.out.print(" ]\n");
+        return to_string(head, max(), "[ ") + " ]";
     }
-    public boolean remove (int value)
+    public boolean remove (T value)
     {
-        Node popped = find(value, head);
-        if (popped == null) { return false; }
+        Node<T> popped = find(value, head);
+        if (!Node.exists(popped)) { return false; }
         if (popped.is_leaf()) {
+            System.out.println("IM A LEAF");
             if (popped.equals(head)) {
                 head = null;
                 return true;
             }
-            Node parent = parent_of(value);
-            if (parent.less_than(value)) {
-                parent.set_right(null);
+            Node<T> parent = parent_of(value);
+            if (parent.value().compareTo(value) < 0) {
+                parent.right(null);
             } else {
-                parent.set_left(null);
+                parent.left(null);
             }
             return true;
         }
-        Node left = popped.get_left();
-        if (left != null) {
+        Node<T> left = popped.left();
+        if (Node.exists(left)) {
             if (left.is_leaf()) {
-                popped.set_left(null);
-                popped.set_value(left.get_value());
+                popped.left(null);
+                popped.value(left.value());
                 return true;
             }
-            Node curr = left;
-            while (curr.get_right() != null) {
-                curr = curr.get_right(); 
+            Node<T> curr = left;
+            while (curr.right() != null) {
+                curr = curr.right(); 
             }
-            popped.set_value(curr.get_value());
+            popped.value(curr.value());
             if (left.equals(curr)) {
-                popped.set_left(curr.get_left());
+                popped.left(curr.left());
             } else {
-                left.set_right(curr.get_left());
+                left.right(curr.left());
             }
         } else {
-            Node right = popped.get_right();
+            Node<T> right = popped.right();
+            
+            System.out.println("HERE I AM" + popped.value());
             if (right.is_leaf()) {
-                popped.set_right(null);
-                popped.set_value(right.get_value());
+                popped.right(null);
+                popped.value(right.value());
                 return true;
             }
-            Node curr = right;
-            while (curr.get_left() != null) {
-                curr = curr.get_left();
+            Node<T> curr = right;
+            while (curr.left() != null) {
+                curr = curr.left();
             }
-            popped.set_value(curr.get_value());
+            popped.value(curr.value());
             if (right.equals(curr)) {
-                popped.set_right(curr.get_right());
+                popped.right(curr.right());
             } else {
-                right.set_left(curr.get_right());
+                right.left(curr.right());
             }
         }
         return true;
@@ -141,13 +147,13 @@ public class BinarySearchTree
         Private Methods 
     */
 
-    private Node parent_of (int value)
+    private Node<T> parent_of (T value)
     {
         if (is_empty()) { return null; }
-        Node curr = head;
+        Node<T> curr = head;
         while (!curr.is_leaf()) {
-            if (curr.less_than(value)) {
-                Node right = curr.get_right();
+            if (curr.value().compareTo(value) < 0) {
+                Node<T> right = curr.right();
                 if (right == null) {
                     return null;
                 }
@@ -155,8 +161,8 @@ public class BinarySearchTree
                     return curr;
                 }
                 curr = right;
-            } else if (curr.greater_than(value)) {
-                Node left = curr.get_left();
+            } else if (curr.value().compareTo(value) > 0) {
+                Node<T> left = curr.left();
                 if (left == null) {
                     return null;
                 }
@@ -170,64 +176,70 @@ public class BinarySearchTree
         }
         return null;
     }
-    private void print_ordered (Node node, int max)
+    private int size (Node<T> branch)
     {
-        if (node == null) {
-            return;
+        if (branch == null) {
+            return 0;
         }
-        print_ordered(node.get_left(), max);
-        int left = 0, right = 0;
-        if (node.get_left() != null) { left = node.get_left().get_value(); }
-        if (node.get_right() != null) { right = node.get_right().get_value(); }
-        System.out.print(node.get_value());
-        if (node.get_value() != max) {
-            System.out.print(", ");
-        }
-        print_ordered(node.get_right(), max);
+        return size(branch.left()) + size(branch.right()) + 1;
     }
-    private Node farthest_left (Node node)
+    private String to_string (Node<T> node, T max, String output)
+    {
+        if (!Node.exists(node)) {
+            return output;
+        }
+        output = to_string(node.left(), max, output);
+        
+        output += node.value();
+
+        if (!node.equals(max)) {
+            output += ", ";
+        }
+        return to_string(node.right(), max, output);
+    }
+    private Node<T> farthest_left (Node<T> node)
     {
         if (is_empty()) { return null; }
-        while (node.get_left() != null) {
-            node = node.get_left();
+        while (node.left() != null) {
+            node = node.left();
         } 
         return node;
     }
-    private Node farthest_right (Node node)
+    private Node<T> farthest_right (Node<T> node)
     {
         if (is_empty()) { return null; }
-        while (node.get_right() != null) {
-            node = node.get_right();
+        while (node.right() != null) {
+            node = node.right();
         }
         return node;
     }
-    private Node find (int value, Node branch)
+    private Node<T> find (T value, Node<T> branch)
     {
         if (branch == null) {
             return null;
         }
-        if (branch.less_than(value)) {
-            return find(value, branch.get_right());
+        if (branch.value().compareTo(value) < 0) {
+            return find(value, branch.right());
         }
-        if (branch.greater_than(value)) {
-            return find(value, branch.get_left());
+        if (branch.value().compareTo(value) > 0) {
+            return find(value, branch.left());
         }
         return branch; // Equals value;
     }
-    private boolean insert (Node branch, Node node)
+    private boolean insert (Node<T> branch, Node<T> node)
     {
-        if (node.less_than(branch)) {
-            Node left = branch.get_left();
+        if (node.compareTo(branch) < 0) {
+            Node<T> left = branch.left();
             if (left == null) {
-                branch.set_left(node);
+                branch.left(node);
                 return true;
             }
             return insert(left, node);
         }
-        if (node.greater_than(branch)) {
-            Node right = branch.get_right();
+        if (node.compareTo(branch) > 0) {
+            Node<T> right = branch.right();
             if (right == null){
-                branch.set_right(node);
+                branch.right(node);
                 return true;
             }
             return insert(right, node);
@@ -235,32 +247,22 @@ public class BinarySearchTree
         return false;  // Is Equal To Branch
     }
 
-    private class Node
+    private class Node<T extends Comparable<T>> extends ComparableNode<T>
     {
-        private int value;
-        private Node left;
-        private Node right;
-        
-        public Node (int val)
+        private Node<T> left;
+        private Node<T> right;
+
+        public Node (T value)
         {
-            value = val;
+            super(value);
         }
-        public int get_value () { return value; }
-        public void set_value (int value) { this.value = value; }
+        
+        public boolean is_leaf () { return !(Node.exists(left) || Node.exists(right)); }
 
-        public boolean is_leaf () { return left == null && right == null; }
-        public Node get_left () { return left; }
-        public Node get_right () { return right; }
+        public Node<T> left () { return left; }
+        public Node<T> right () { return right; }
 
-        public void set_left (Node node) { left = node; }
-        public void set_right (Node node) { right = node; }
-
-        public boolean less_than (Node node) { return value < node.get_value(); }
-        public boolean less_than (int val) { return value < val; }
-        public boolean greater_than (Node node) { return value > node.get_value(); }
-        public boolean greater_than (int val) { return value > val; }
-        public boolean equals (int val) { return value == val; }
-        public boolean equals (Node node) { return value == node.get_value(); }
+        public void left (Node<T> node) { left = node; }
+        public void right (Node<T> node) { right = node; }
     }
-
 }
