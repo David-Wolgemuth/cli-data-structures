@@ -1,5 +1,6 @@
+package dataStructures;
 
-public class LinkedList<T>
+public class LinkedList<T extends Comparable<T>>
 {
     private Node<T> head;
 
@@ -36,7 +37,7 @@ public class LinkedList<T>
     public int length ()
     {
         int count = 0; 
-        for (Node<T> curr = head; Node.exists(curr); curr = curr.get_next()) {
+        for (Node<T> curr = head; Node.exists(curr); curr = curr.next()) {
             count++;
         }
         return count;
@@ -44,7 +45,7 @@ public class LinkedList<T>
     public String toString ()
     {
         String str = "";
-        for (Node<T> curr = head; Node.exists(curr); curr = curr.get_next()) {
+        for (Node<T> curr = head; Node.exists(curr); curr = curr.next()) {
             str += curr.value();
             if (!curr.is_last()) {
                 str += " -> ";
@@ -60,18 +61,18 @@ public class LinkedList<T>
         if (is_empty()) {
             return false;
         }
-        if (head.has_value(value)) {
-            head = head.get_next();
+        if (head.value().equals(value)) {
+            head = head.next();
             return true;
         }
         Node<T> curr = head;
         while (!curr.is_last()) {
-            T val = curr.get_next().value();
-            if (curr.get_next().has_value(value)) {
-                curr.set_next(curr.get_next().get_next());
+            T val = curr.next().value();
+            if (curr.next().value().equals(value)) {
+                curr.next(curr.next().next());
                 return true;
             }
-            curr = curr.get_next();
+            curr = curr.next();
         }
         return false;
     }
@@ -85,7 +86,7 @@ public class LinkedList<T>
 
         while (Node.exists(node) && current_position < pos) {
             current_position++;
-            node = node.get_next();
+            node = node.next();
         }
         if (current_position != pos) {
             return null;
@@ -101,7 +102,7 @@ public class LinkedList<T>
         Node<T> node = head;
         int current_position = 1;
         while (current_position < length - pos  && Node.exists(node)) {
-            node = node.get_next();
+            node = node.next();
             current_position++;
         }
         if (length - pos != current_position) {
@@ -119,12 +120,12 @@ public class LinkedList<T>
         if (pos == 0) {
             Node<T> next = head;
             head = new Node<T>(value);
-            head.set_next(next);
+            head.next(next);
         }
         Node<T> curr = head;
         int index = 1;
         while (!curr.is_last() && index < pos) {
-            curr = curr.get_next();
+            curr = curr.next();
             index++;
         }
         insert_after(curr, value);
@@ -141,38 +142,32 @@ public class LinkedList<T>
         int index = 0;
         while (!runner.is_last()) {
             if (index >= pos) {
-                curr = curr.get_next();
+                curr = curr.next();
             }
             index++;
-            runner = runner.get_next();
+            runner = runner.next();
         }
         insert_after(curr, value);
     }
     private void insert_after (Node<T> node, T value)
     {
-        Node<T> next = node.get_next();
-        node.set_next(new Node<T>(value));
-        node.get_next().set_next(next);
+        Node<T> next = node.next();
+        node.next(new Node<T>(value));
+        node.next().next(next);
     }
 
-    private static class Node<T>
+    private class Node<T extends Comparable<T>> extends ComparableNode<T>
     {
         private T value;
         private Node<T> next;
         public Node (T value)
         {
-            value(value);
+            super(value);
         }
-        public static boolean exists (Node node) { return node != null; }
 
-        public void value (T value) { this.value = value; }
-        public T value () { return value; }
+        public Node<T> next () { return next; }
+        public void next (Node<T> next) { this.next = next; }
 
-        public boolean has_value(T value) { return this.value.equals(value); }
-
-        public void set_next (Node<T> next) { this.next = next; }
-        public Node<T> get_next () { return next; }
-
-        public boolean is_last () { return this.next == null; }
+        public boolean is_last () { return !Node.exists(this.next); }
     }
 }

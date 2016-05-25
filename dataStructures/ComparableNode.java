@@ -1,3 +1,4 @@
+package dataStructures;
 
 public class ComparableNode<T extends Comparable<T>> implements Comparable<ComparableNode<T>>
 {
