@@ -1,0 +1,5 @@
+Create Array of 60000 Random Integers: 0.006053249 seconds
+Bubble Sort: 17.218330768 seconds
+Selection Sort: 3.910825291 seconds
+Insertion Sort: 5.720557528 seconds
+Quick Sort: 0.015449651 seconds
